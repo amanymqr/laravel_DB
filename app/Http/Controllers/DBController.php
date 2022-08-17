@@ -43,8 +43,10 @@ class DBController extends Controller
 
     public function create()
     {
+        
         return view('posts2.create');
     }
+
 
 
 
