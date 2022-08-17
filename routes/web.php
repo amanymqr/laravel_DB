@@ -15,3 +15,7 @@ use App\Http\Controllers\DBController;
 */
 
 Route::get('posts2',[DBController::class , 'index'])->name('index.post');
+
+
+Route::get('posts2/create',[DBController::class , 'create'])->name('create.post');
+Route::post('posts2/store',[DBController::class , 'store'])->name('store.post');
