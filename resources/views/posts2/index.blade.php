@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,43 +10,53 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
         integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-        <style>
-            ::selection {
+    <style>
+        ::selection {
             background: #dfff10;
-}
-        </style>
+        }
+    </style>
 </head>
-<body >
+
+<body>
 
 
 
     <div class="container my-5 ">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1>
-            ALL POSTS :
-        </h1>
-        <a class="btn btn-success" href="{{ route('create.post') }}">
-            add new post
-        </a>
-    </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1>
+                ALL POSTS :
+            </h1>
+            <a class="btn btn-success" href="{{ route('create.post') }}">
+                add new post
+            </a>
+        </div>
 
+
+        @if (session('msg'))
+            <div class="alert alert-success">
+                {{ session('msg') }}
+            </div>
+        @endif
 
         <form action="{{ route('index.post') }}" method="get">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Search here .." name="search" value="{{ request()->search }}">
+                <input type="text" class="form-control" placeholder="Search here .." name="search"
+                    value="{{ request()->search }}">
 
                 <select name="count">
-                    <option {{ request()->count==10?'selected': '' }}value="10">10</option>
-                    <option {{ request()->count==15?'selected': '' }}  value="15">15</option>
-                    <option {{ request()->count==20?'selected': '' }} value="20">20</option>
-                    <option {{ request()->count==$posts->total()?'selected': '' }} value="{{ $posts->total() }}">all</option>
+                    <option {{ request()->count == 10 ? 'selected' : '' }}value="10">10</option>
+                    <option {{ request()->count == 15 ? 'selected' : '' }} value="15">15</option>
+                    <option {{ request()->count == 20 ? 'selected' : '' }} value="20">20</option>
+                    <option {{ request()->count == $posts->total() ? 'selected' : '' }} value="{{ $posts->total() }}">
+                        all
+                    </option>
                 </select>
-                <button class="btn btn-dark px-5"  >search</button>
+                <button class="btn btn-dark px-5">search</button>
             </div>
 
         </form>
@@ -62,30 +73,63 @@
                 <th>ACTION</th>
             </tr>
 
-            @foreach ($posts as $post )
-            <tr>
-                <td>{{ $post->id }}</td>
-                <td>{{ $post->name }}</td>
-                <td><img  width="80" class="width:200" src="{{asset('uploads/'. $post->image) }}" alt=""></td>
+            @foreach ($posts as $post)
+                <tr>
+                    <td>{{ $post->id }}</td>
+                    <td>{{ $post->name }}</td>
+                    <td><img width="80" class="width:200" src="{{ asset('uploads/' . $post->image) }}"
+                            alt=""></td>
 
 
-                <td> {{ $post->created_at }}</td>
-                <td>{{ $post->updated_at }}</td>
-                <td>{{ $post->content }}</td>
-                {{-- <td>{{ $post->content }}</td> --}}
-                <td>
-                    <a class="btn btn-success btn-small " href=""><i class="fa-solid fa-pen-to-square"></i></a>
-                    <a class="btn btn-danger btn-small " href="">
-                        <i class="fa-solid fa-delete-left"></i>
-                    </a>
-                </td>
-            </tr>
+                    <td> {{ $post->created_at }}</td>
+                    <td>{{ $post->updated_at }}</td>
+                    <td>{!! $post->content !!}</td>
+                    {{-- <td>{{ $post->content }}</td> --}}
+                    <td>
+                        <a class="btn btn-success btn-small " href="{{ route('edit.post' , $post->id) }}"><i
+                                class="fa-solid fa-pen-to-square"></i></a>
 
+
+                        <form class="d-inline" action="{{ route('destroy.post', $post->id) }}" method="post">
+                            @csrf
+                            @method('delete')
+                            <button onclick="return confirm('Are You Sure?')" class="btn btn-danger btn-small "> <i
+                                    class="fa-solid fa-delete-left"></i></button>
+                        </form>
+
+
+                    </td>
+                </tr>
             @endforeach
         </table>
 
         {{ $posts->appends($_GET)->links() }}
     </div>
 
+
+    <script>
+        let alert = document.querySelector('.alert');
+
+        // console.log(alert);
+        setTimeout(() => {
+            // console.log(Timeout);
+
+            alert.remove();
+        }, 3000);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        @if (session('msg'))
+            Swal.fire(
+            'Good job!',
+            '{{ session("msg") }}',
+            'success'
+            )
+        @endif
+    </script>
+
 </body>
+
 </html>
